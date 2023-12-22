@@ -1,0 +1,9 @@
+/*.QPushButton#logInPushButton {
+    background-color: green;
+}*/
+.QPushButton#logoPushButton:pressed {
+    background : transparent;
+    border-width: 0px;
+    border-radius: 10px;
+}
+
