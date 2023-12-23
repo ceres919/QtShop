@@ -363,7 +363,7 @@
                  <x>0</x>
                  <y>0</y>
                  <width>748</width>
-                 <height>381</height>
+                 <height>344</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_6">
@@ -388,11 +388,7 @@
            </attribute>
            <layout class="QGridLayout" name="gridLayout_2">
             <item row="0" column="0">
-             <widget class="QPushButton" name="pushButton">
-              <property name="text">
-               <string>PushButton</string>
-              </property>
-             </widget>
+             <widget class="QTableView" name="tableView"/>
             </item>
            </layout>
           </widget>

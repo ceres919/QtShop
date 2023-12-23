@@ -36,6 +36,30 @@ void RegistrationForm::signUpButton_clicked(){
         qDebug() << query->lastError();
     }
 
+    query->prepare("SELECT id FROM customer WHERE email = :email;");
+    query->bindValue(":email", ui->emailLineEdit->text());
+    if (!query->exec()){
+        qDebug() << query->lastError();
+    }
+    int account_id = 0;
+    if (query->next()){
+        account_id = query->record().value(0).toInt();
+    }
+
+    if(account_id != 0){
+        query->prepare("INSERT INTO cart (customer_id) VALUES (:customer_id);");
+        query->bindValue(":customer_id", account_id);
+
+        if (!query->exec()){
+            qDebug() << query->lastError();
+        }
+    }
+    else{
+        QMessageBox::critical(this, "Ошибка", "Неудалось создать аккаунт");
+        return;
+    }
+
+
     hide();
     mainWindow = new MainWindow();
     mainWindow->show();
