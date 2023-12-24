@@ -1,21 +1,15 @@
 #include "accountdialog.h"
 #include "ui_accountdialog.h"
 
-AccountDialog::AccountDialog(QWidget *parent, QSqlDatabase *db, QSqlRecord *account) :
+AccountDialog::AccountDialog(QWidget *parent) :
     QDialog(parent),
-    db(*db),
-    account(*account),
     ui(new Ui::AccountDialog)
 {
     ui->setupUi(this);
-    ui->nameLineEdit->setText(account->value(1).toString());
-    ui->emailLineEdit->setText(account->value(2).toString());
-
-    query = new QSqlQuery(*db);
+    query = new QSqlQuery(db);
 
     connect(ui->logOutPushButton, SIGNAL(clicked()), this, SLOT(logOutButton_clicked()));
     connect(ui->saveChangesPushButton, SIGNAL(clicked()), this, SLOT(saveButton_clicked()));
-
 }
 
 AccountDialog::~AccountDialog()
@@ -23,8 +17,17 @@ AccountDialog::~AccountDialog()
     delete ui;
 }
 
-void AccountDialog::logOutButton_clicked(){
+void AccountDialog::setDataBase(QSqlDatabase base){
+    db = base;
+}
 
+void AccountDialog::setAccount(QSqlRecord acc){
+    account = acc;
+    ui->nameLineEdit->setText(account.value(1).toString());
+    ui->emailLineEdit->setText(account.value(2).toString());
+}
+
+void AccountDialog::logOutButton_clicked(){
     this->hide();
     emit logOutSignal();
 }

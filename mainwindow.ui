@@ -362,8 +362,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>748</width>
-                 <height>344</height>
+                 <width>43</width>
+                 <height>40</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_6">
@@ -388,7 +388,14 @@
            </attribute>
            <layout class="QGridLayout" name="gridLayout_2">
             <item row="0" column="0">
-             <widget class="QTableView" name="tableView"/>
+             <widget class="QTableView" name="tableView">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="focusPolicy">
+               <enum>Qt::NoFocus</enum>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>
@@ -482,7 +489,7 @@
      <x>0</x>
      <y>0</y>
      <width>1171</width>
-     <height>42</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

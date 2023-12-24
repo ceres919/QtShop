@@ -1,13 +1,12 @@
 #include "registrationform.h"
 #include "ui_registrationform.h"
 
-RegistrationForm::RegistrationForm(QWidget *parent, QSqlDatabase *db) :
+RegistrationForm::RegistrationForm(QWidget *parent) :
     QWidget(parent),
-    db(*db),
     ui(new Ui::RegistrationForm)
 {
     ui->setupUi(this);
-    query = new QSqlQuery(*db);
+    query = new QSqlQuery(db);
     connect(ui->signUpPushButton, SIGNAL(clicked()), this, SLOT(signUpButton_clicked()));
 }
 
@@ -16,7 +15,16 @@ RegistrationForm::~RegistrationForm()
     delete ui;
 }
 
+void RegistrationForm::setDataBase(QSqlDatabase base){
+    db = base;
+}
+
 void RegistrationForm::signUpButton_clicked(){
+//    AccountRequest *accReq = new AccountRequest();
+//    accReq->setForm(this);
+//    accReq->setDb(db);
+
+
     QRegExp name("^[А-ЯЁ][а-яё]+(?:\\s+[А-ЯЁ][а-яё]+){0,2}(?:\\s+[А-ЯЁ]\\.)?(?:\\s+[А-ЯЁ]\\.)?$");
     QRegExp email("^((?!\\.)[\\w\\-_.]*[^.])(@\\w+)(\\.\\w+(\\.\\w+)?[^.\\W])$");
     QRegExp password("^[A-Za-z\\d]{8,}");
@@ -27,31 +35,38 @@ void RegistrationForm::signUpButton_clicked(){
         return;
     }
 
+    //добавление аккаунта в таблицу
     query->prepare("INSERT INTO customer (name, email, password) VALUES (:name, :email, :password);");
     query->bindValue(":name", ui->nameLineEdit->text());
     query->bindValue(":email", ui->emailLineEdit->text());
     query->bindValue(":password", ui->passwordLineEdit->text());
-
     if (!query->exec()){
         qDebug() << query->lastError();
+        QMessageBox::critical(this, "Ошибка", "Неудалось создать аккаунт");
+        return ;
     }
 
-    query->prepare("SELECT id FROM customer WHERE email = :email;");
+    //получение аккаунта из таблицы
+    QSqlRecord account;
+    query->prepare("SELECT * FROM customer WHERE email = :email;");
     query->bindValue(":email", ui->emailLineEdit->text());
     if (!query->exec()){
         qDebug() << query->lastError();
-    }
-    int account_id = 0;
-    if (query->next()){
-        account_id = query->record().value(0).toInt();
+        //Ошибка аккаунт не найден
+    } else {
+        if (query->next())
+            account = query->record();
     }
 
+    //создаём корзину для аккаунт
+    int account_id = account.value(0).toInt();
     if(account_id != 0){
         query->prepare("INSERT INTO cart (customer_id) VALUES (:customer_id);");
         query->bindValue(":customer_id", account_id);
-
         if (!query->exec()){
             qDebug() << query->lastError();
+            QMessageBox::critical(this, "Ошибка", "Неудалось создать аккаунт");
+            return;
         }
     }
     else{
@@ -59,21 +74,22 @@ void RegistrationForm::signUpButton_clicked(){
         return;
     }
 
+    //получение id корзины
+    int cart_id = 0;
+    query->prepare("SELECT * FROM cart WHERE customer_id = :customer_id;");
+    query->bindValue(":customer_id", account_id);
+    if (!query->exec()){
+        qDebug() << query->lastError();
+        //Ошибка корзина не найдена
+    } else {
+        if (query->next())
+            cart_id = query->record().value(0).toInt();
+    }
 
     hide();
-    mainWindow = new MainWindow();
+    MainWindow *mainWindow = new MainWindow();
+    mainWindow->setDataBase(db);
+    mainWindow->setAccount(account);
+    mainWindow->setCart_id(cart_id);
     mainWindow->show();
-
-
-//    QString query = "SELECT * FROM customer";
-//    QSqlQuery sqlquery (db);
-//    if(!sqlquery.exec(query)) {
-//        qDebug() << "query failed...";
-//        //return;
-//    }
-//    while (sqlquery.next()){
-//        qDebug() << sqlquery.value(1).toString();
-//        //получим значение и например добавим его в комбобокс со всеми значениями
-
-//    }
 }

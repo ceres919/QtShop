@@ -19,8 +19,10 @@ class AccountDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit AccountDialog(QWidget *parent = nullptr, QSqlDatabase *db = nullptr, QSqlRecord *account = nullptr);
+    explicit AccountDialog(QWidget *parent = nullptr);
     ~AccountDialog();
+    void setDataBase(QSqlDatabase base);
+    void setAccount(QSqlRecord acc);
 
 signals:
     void logOutSignal();
@@ -31,9 +33,10 @@ private slots:
 
 private:
     Ui::AccountDialog *ui;
-    QSqlQuery *query;
     QSqlDatabase db;
     QSqlRecord account;
+    QSqlQuery *query;
+
 };
 
 #endif // ACCOUNTDIALOG_H

@@ -20,8 +20,9 @@ class LogInForm : public QWidget
     Q_OBJECT
 
 public:
-    explicit LogInForm(QWidget *parent = nullptr, QSqlDatabase *db = nullptr);
+    explicit LogInForm(QWidget *parent = nullptr);
     ~LogInForm();
+    void setDataBase(QSqlDatabase base);
 
 private slots:
     void regButton_clicked();
@@ -31,8 +32,8 @@ private:
     Ui::LogInForm *ui;
     QSqlDatabase db;
     QSqlQuery *query;
-    MainWindow *mainWindow;
-    RegistrationForm *signUpWindow;
+    //MainWindow *mainWindow;
+    //RegistrationForm *signUpWindow;
 
 };
 

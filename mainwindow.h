@@ -3,9 +3,18 @@
 
 #include <QMainWindow>
 #include <QGroupBox>
-#include "accountdialog.h"
-#include "cartdialog.h"
 #include <QtSql>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QSqlRecord>
+#include <QSqlRelationalTableModel>
+#include <QSqlRelationalDelegate>
+#include <QComboBox>
+#include <QLayout>
+#include <QRadioButton>
+#include "accountdialog.h"
+#include "loginform.h"
+#include "cartdialog.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -16,8 +25,12 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr, QSqlDatabase *db = nullptr, QSqlRecord *account = nullptr);
+    MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void setDataBase(QSqlDatabase base);
+    void setCart_id(int cart);
+    void setAccount(QSqlRecord acc);
+
 public slots:
     void logOut_event();
 
@@ -32,7 +45,10 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QSqlDatabase db;
+    QSqlRelationalTableModel *model;
+    QSqlQueryModel *qmodel;
     QSqlRecord account;
+    int cart_id;
     AccountDialog *accountWindow;
     CartDialog *cartWindow;
     QGroupBox *sortButtonsGroup;

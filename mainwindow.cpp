@@ -1,30 +1,20 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
-#include "loginform.h"
-//#include "QPushButton"
-#include "QComboBox"
-#include "QLayout"
-#include "QRadioButton"
-//#include "QWidget"
 
-
-
-MainWindow::MainWindow(QWidget *parent, QSqlDatabase *db, QSqlRecord *account)
+MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
-    db(*db),
-    account(*account),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     ui->netOrderPushButton->animateClick();
     ui->itemsListBodyTabWidget->tabBar()->hide();
-
+    ui->tableView->verticalHeader()->hide();
 
     //кнопка лого
     connect(ui->logoPushButton, SIGNAL(clicked()), this, SLOT(logoButton_clicked()));
 
     //чтобы выйти из аккаунта
-    accountWindow = new AccountDialog(nullptr, db, account);
+    accountWindow = new AccountDialog();
     connect(accountWindow, &AccountDialog::logOutSignal, this, &MainWindow::logOut_event);
 
     //вызов окон аккаунта и корзины
@@ -66,6 +56,31 @@ MainWindow::MainWindow(QWidget *parent, QSqlDatabase *db, QSqlRecord *account)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::setDataBase(QSqlDatabase base){
+    db = base;
+    accountWindow->setDataBase(db);
+
+    model = new QSqlRelationalTableModel (this, db);
+    model->setJoinMode(QSqlRelationalTableModel::LeftJoin);
+    model->setEditStrategy (QSqlRelationalTableModel::OnManualSubmit);
+    model->setTable ("product");
+    model->setRelation(model->fieldIndex("category_id"), QSqlRelation("type_category", "id", "name"));
+    model->setRelation(model->fieldIndex("category_id_type"), QSqlRelation("product_type", "id", "name"));
+    model->select();
+    ui->tableView->setModel(model);
+}
+
+void MainWindow::setAccount(QSqlRecord acc){
+    account = acc;
+    accountWindow->setAccount(account);
+}
+
+void MainWindow::setCart_id(int cart)
+{
+    cart_id = cart;
+
 }
 
 void MainWindow::logoButton_clicked(){
@@ -110,13 +125,14 @@ void MainWindow::accountButton_clicked(){
     accountWindow->exec();
 }
 void MainWindow::cartButton_clicked(){
-    cartWindow  = new CartDialog();
+    cartWindow = new CartDialog();
+    cartWindow->setCart_id(cart_id);
     cartWindow->setModal(true);
     cartWindow->exec();
 }
 
 void MainWindow::logOut_event(){
     this->close();
-    LogInForm *logWindow = new LogInForm(nullptr, &db);
+    LogInForm *logWindow = new LogInForm();
     logWindow->show();
 }

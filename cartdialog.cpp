@@ -12,3 +12,12 @@ CartDialog::~CartDialog()
 {
     delete ui;
 }
+
+void CartDialog::setDataBase(QSqlDatabase base){
+    db = base;
+}
+
+void CartDialog::setCart_id(int cart)
+{
+    cart_id = cart;
+}

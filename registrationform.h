@@ -11,7 +11,6 @@
 #include <QRegExp>
 #include "mainwindow.h"
 
-
 namespace Ui {
 class RegistrationForm;
 }
@@ -21,8 +20,9 @@ class RegistrationForm : public QWidget
     Q_OBJECT
 
 public:
-    explicit RegistrationForm(QWidget *parent = nullptr, QSqlDatabase *db = nullptr);
+    explicit RegistrationForm(QWidget *parent = nullptr);
     ~RegistrationForm();
+    void setDataBase(QSqlDatabase base);
 
 private slots:
     void signUpButton_clicked();
@@ -31,7 +31,7 @@ private:
     Ui::RegistrationForm *ui;
     QSqlDatabase db;
     QSqlQuery *query;
-    MainWindow *mainWindow;
+    //MainWindow *mainWindow;
 };
 
 #endif // REGISTRATIONFORM_H
