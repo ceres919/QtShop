@@ -1,21 +1,24 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
+#define I2P(image) QPixmap::fromImage(image)
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    query = new QSqlQuery(db);
+    resetImage(QString::number(1));
+
     ui->setupUi(this);
     ui->netOrderPushButton->animateClick();
     ui->itemsListBodyTabWidget->tabBar()->hide();
     ui->tableView->horizontalHeader()->hide();
+    ui->tableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     ui->tableView->verticalHeader()->hide();
     ui->tableView->resizeColumnsToContents();
     ui->categoryComboBox->setVisible(false);
     ui->label->setVisible(false);
-
-    query = new QSqlQuery(db);
-
 
     //поиск
     connect(ui->searchLineEdit, SIGNAL(textChanged(QString)), this, SLOT(searchLineEdit_textChanged(QString)));
@@ -56,6 +59,7 @@ MainWindow::MainWindow(QWidget *parent)
     {
         connect(sortButton, SIGNAL(toggled(bool)), this, SLOT(checkForSortButtonsExclusivity(bool)));
     }
+
 }
 
 MainWindow::~MainWindow()
@@ -76,27 +80,12 @@ void MainWindow::setDataBase(QSqlDatabase base){
     model->setRelation(model->fieldIndex("category_id_type"), QSqlRelation("product_type", "id", "name"));
     model->select();
 
-    //model->setHeaderData(4, Qt::Horizontal, tr("type"));
     ui->tableView->setModel(model);
-    //ui->tableView->hideColumn(0);
     ui->tableView->hideColumn(3);
-    //ui->tableView->hideColumn(4);
     ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
     //кнопка "добавить в корзину"
-
-//    int i = 0;
-//    QPushButton *delButton;
-
-//    model->insertColumn(6, this);
-//    delButton = new QPushButton();
-//    delButton->setText("Delete " + QString::number(i));
-//    ui->tableView->setIndexWidget(model->index(i , 6), delButton);
-//        //connect(delButton , SIGNAL(clicked()) , this , SLOT(delete()));
-//        i++;
     ui->tableView->setItemDelegateForColumn(4, new BasketButtonDelegate(ui->tableView));
-
-
 
     //комбокс каталога
     if(!query->exec("SELECT name FROM product_type;")){
@@ -230,7 +219,6 @@ void MainWindow::newWay(int typeIndex){
             ui->categoryComboBox->addItem(query->record().value(0).toString());
         }
     }
-
 }
 
 void MainWindow::accountButton_clicked(){
@@ -257,30 +245,43 @@ void MainWindow::searchLineEdit_textChanged(const QString &arg1)
     QString searchInput = filterLower + " OR " + filterUpper;
     if (!arg1.isEmpty()) {
         model->setFilter(searchInput);
+        resetImage(searchInput);
     }
     else{
         model->setFilter(QString::number(1));
+        resetImage(QString::number(1));
     }
 }
-
-
-
 
 void MainWindow::loadImage(const QString &urlString) {
     Networking::httpGetImageAsync(QUrl(urlString), this, "onImageRead");
 }
 
-void MainWindow::setImage(const QImage &image) {
-    currentImage_ = ImageManager::normallyResized(image, 150);
-    updateImages();
+void MainWindow::setImage(const QUrl &imageUrl, const QImage &image) {
+    currentImage = ImageManager::normallyResized(image, 120);
+    updateImages(imageUrl);
 }
 
-void MainWindow::resetImage() {
-    setImage(QImage());
+void MainWindow::resetImage(QString filter) {
+    query->exec("SELECT product_photo.id, url from product_photo INNER JOIN product ON "
+                "product_photo.product_id = product.id WHERE (" + filter + ");");
+    while(query->next()) {
+        photo_map.insert(query->record().value(1).toString(), query->record().value(0).toInt()-1);
+        loadImage(query->record().value(1).toString());
+    }
 }
 
-void MainWindow::updateImages() {
-    ui->label_2->setPixmap(
-        I2P(ImageManager::roundSquared(currentImage_, 147, 12)));
+void MainWindow::updateImages(const QUrl &imageUrl) {
+    if (photo_map.contains(imageUrl)) {
+        QLabel *imageLabel = new QLabel();
+        imageLabel->setPixmap(I2P(currentImage));
+        ui->tableView->setIndexWidget(model->index(photo_map.value(imageUrl), 0), imageLabel);
+        ui->tableView->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    }
+}
+
+void MainWindow::onImageRead(const QUrl &imageUrl, const QImage &image) {
+    Q_UNUSED(imageUrl)
+    setImage(imageUrl, image);
 }
 

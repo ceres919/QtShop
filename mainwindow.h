@@ -51,9 +51,10 @@ private slots:
     void setPriceFilter();
     void searchLineEdit_textChanged(const QString &arg1);
     void loadImage(const QString &urlString);
-    void setImage(const QImage &image);
-    void resetImage();
-    void updateImages();
+    void setImage(const QUrl &imageUrl, const QImage &image);
+    void resetImage(QString filter);
+    void updateImages(const QUrl &imageUrl);
+    void onImageRead(const QUrl &imageUrl, const QImage &image);
 
 private:
     void setMinMax(int min, int max);
@@ -68,6 +69,8 @@ private:
     QSqlQuery *query;
     QSqlRecord account;
     int cart_id;
+    QImage currentImage;
+    QMap<QUrl, int> photo_map;
     AccountDialog *accountWindow;
     CartDialog *cartWindow;
     QGroupBox *sortButtonsGroup;
