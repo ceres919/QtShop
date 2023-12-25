@@ -12,11 +12,15 @@
 #include <QComboBox>
 #include <QLayout>
 #include <QRadioButton>
+#include <QSpinBox>
 #include <QList>
 
 #include "accountdialog.h"
 #include "loginform.h"
 #include "cartdialog.h"
+#include "basketdelegate.h"
+#include "imagemanager.h"
+#include "networking.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -38,16 +42,26 @@ public slots:
 
 private slots:
     void accountButton_clicked();
-    void cartButton_clicked();
-    void newWay(int typeIndex);
+    void cartButton_clicked();  
     void checkForSortButtonsExclusivity(bool checked);
     void switchOrderTabs();
     void logoButton_clicked();
     void productTypeComboBox_onChange(int currentIndex);
     void category_onChange(int currentIndex);
-    void setSortingType(QString currentSort);
+    void setPriceFilter();
+    void searchLineEdit_textChanged(const QString &arg1);
+    void loadImage(const QString &urlString);
+    void setImage(const QImage &image);
+    void resetImage();
+    void updateImages();
 
 private:
+    void setMinMax(int min, int max);
+    void setMinMaxSlider(QSlider *slider, int min, int max);
+    void setMinMaxSpinBox(QSpinBox *spin, int min, int max);
+    void newWay(int typeIndex);
+    void setSortingType(QString currentSort);
+    void minMaxPriceOfProducts();
     Ui::MainWindow *ui;
     QSqlDatabase db;
     QSqlRelationalTableModel *model;
