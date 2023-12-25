@@ -24,8 +24,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->searchLineEdit, SIGNAL(textChanged(QString)), this, SLOT(searchLineEdit_textChanged(QString)));
 
     //смена типа и категории товаров
-    connect(ui->catalogWayComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(productTypeComboBox_onChange(int)));
-    connect(ui->categoryComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(category_onChange(int)));
+    connect(ui->catalogWayComboBox, SIGNAL(activated(int)), this, SLOT(productTypeComboBox_onChange(int)));
+    connect(ui->categoryComboBox, SIGNAL(activated(int)), this, SLOT(category_onChange(int)));
 
     //кнопка лого
     connect(ui->logoPushButton, SIGNAL(clicked()), this, SLOT(logoButton_clicked()));
@@ -76,6 +76,7 @@ void MainWindow::setDataBase(QSqlDatabase base){
     model->setJoinMode(QSqlRelationalTableModel::LeftJoin);
     model->setEditStrategy (QSqlRelationalTableModel::OnManualSubmit);
     model->setTable ("product");
+    model->setFilter(QString::number(1));
     model->setRelation(model->fieldIndex("category_id"), QSqlRelation("type_category", "id", "name"));
     model->setRelation(model->fieldIndex("category_id_type"), QSqlRelation("product_type", "id", "name"));
     model->select();
@@ -115,20 +116,30 @@ void MainWindow::logoButton_clicked(){
 void MainWindow::setPriceFilter(){
     QString filter = "price BETWEEN " + QString::number(ui->minPriceSpinBox->value()) + " AND " + QString::number(ui->maxPriceSpinBox->value());
     model->setFilter(filter);
+    resetImage("(" + model->filter() + ")");
 }
 
 void MainWindow::productTypeComboBox_onChange(int currentIndex){
+//    qDebug()<<ui->categoryComboBox->currentIndex();
+//    ui->categoryComboBox->setCurrentIndex(0);
+//    qDebug()<<ui->categoryComboBox->count();
+//    for (int i = 1; i <= ui->categoryComboBox->count(); ++i) {
+//        qDebug()<<ui->categoryComboBox->itemData();
+
+//        ui->categoryComboBox->removeItem(i);
+//    }
+
     QString currentType = ui->catalogWayComboBox->currentText();
     if(currentType != "Все категории товаров"){
-        model->setFilter("product_type_name_2 = '" + currentType +"'");
+        model->setFilter("product_type_name_2 = '" + currentType +"'");       
         newWay(currentIndex);
     } else{
-        model->setFilter(QString());
+        model->setFilter(QString::number(1));
         ui->label->setVisible(false);
         ui->categoryComboBox->setVisible(false);
     }
     ui->catalogWayComboBox->adjustSize();
-    model->select();
+    resetImage("(" + model->filter() + ")");
 }
 
 void MainWindow::category_onChange(int currentIndex){
@@ -143,7 +154,7 @@ void MainWindow::category_onChange(int currentIndex){
         model->setFilter(typeFilter);
     }
     ui->categoryComboBox->adjustSize();
-    model->select();
+    resetImage("(" + model->filter() + ")");
 }
 
 void MainWindow::switchOrderTabs(){
@@ -173,6 +184,7 @@ void MainWindow::checkForSortButtonsExclusivity(bool checked){
         ui->tableView->horizontalHeader()->setSortIndicator(-1, Qt::AscendingOrder);
         ui->tableView->setSortingEnabled(true);
         ui->tableView->sortByColumn(0, Qt::AscendingOrder);
+        resetImage("(" + model->filter() + ")");
     }
 }
 
@@ -185,11 +197,15 @@ void MainWindow::setSortingType(QString currentSort){
 
     if(currentSort == "sortByNameRadioButton"){
         ui->tableView->sortByColumn(1, Qt::AscendingOrder);
+        resetImage("(" + model->filter() + ") ORDER BY product.name ASC");
     } else if(currentSort == "sortByPriceIncRadioButton") {
         ui->tableView->sortByColumn(5, Qt::AscendingOrder);
+        resetImage("(" + model->filter() + ") ORDER BY product.price ASC");
     } else if(currentSort == "sortByPriceDecRadioButton"){
         ui->tableView->sortByColumn(5, Qt::DescendingOrder);
+        resetImage("(" + model->filter() + ") ORDER BY product.price DESC");
     }
+
 }
 
 void MainWindow::setMinMaxSpinBox(QSpinBox *spin, int min, int max)
@@ -245,11 +261,11 @@ void MainWindow::searchLineEdit_textChanged(const QString &arg1)
     QString searchInput = filterLower + " OR " + filterUpper;
     if (!arg1.isEmpty()) {
         model->setFilter(searchInput);
-        resetImage(searchInput);
+        resetImage("(" + searchInput + ")");
     }
     else{
         model->setFilter(QString::number(1));
-        resetImage(QString::number(1));
+        resetImage("(" + model->filter() + ")");
     }
 }
 
@@ -263,10 +279,15 @@ void MainWindow::setImage(const QUrl &imageUrl, const QImage &image) {
 }
 
 void MainWindow::resetImage(QString filter) {
-    query->exec("SELECT product_photo.id, url from product_photo INNER JOIN product ON "
-                "product_photo.product_id = product.id WHERE (" + filter + ");");
+    photo_map.clear();
+    query->exec("SELECT product_photo.id, url, product_type.name as product_type_name_2, "
+                "type_category.name as type_category_name_3 from product_photo INNER JOIN "
+                "product ON product_photo.product_id = product.id LEFT JOIN type_category ON "
+                "category_id=type_category.id LEFT JOIN product_type ON "
+                "category_id_type=product_type.id WHERE " + filter + ";");
+    int ind = 0;
     while(query->next()) {
-        photo_map.insert(query->record().value(1).toString(), query->record().value(0).toInt()-1);
+        photo_map.insert(query->record().value(1).toString(), ind++);
         loadImage(query->record().value(1).toString());
     }
 }
