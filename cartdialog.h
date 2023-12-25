@@ -20,12 +20,17 @@ class CartDialog : public QDialog
 public:
     explicit CartDialog(QWidget *parent = nullptr);
     ~CartDialog();
-    void setDataBase(QSqlDatabase base);
+    void setDataBase(QSqlDatabase &base);
     void setCart_id(int cart);
+
+public slots:
+    void onItemAddedToCart(const QVariant& data);
+    void updateCart();
 
 private:
     Ui::CartDialog *ui;
     QSqlDatabase db;
+    QSqlRelationalTableModel *model;
     int cart_id;
 };
 

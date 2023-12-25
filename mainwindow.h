@@ -37,8 +37,12 @@ public:
     void setCart_id(int cart);
     void setAccount(QSqlRecord acc);
 
+signals:
+    void itemAddedToCart(const QVariant& data);
+
 public slots:
     void logOut_event();
+    void addToBasket(int itemId);
 
 private slots:
     void accountButton_clicked();

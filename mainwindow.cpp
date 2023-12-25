@@ -38,7 +38,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->accountPushButton, SIGNAL(clicked()), this, SLOT(accountButton_clicked()));
     connect(ui->cartPushButton, SIGNAL(clicked()), this, SLOT(cartButton_clicked()));
 
-
     //смена на сетку или список в каталоге
     connect(ui->netOrderPushButton, SIGNAL(clicked()), this, SLOT(switchOrderTabs()));
     connect(ui->listOrderPushButton, SIGNAL(clicked()), this, SLOT(switchOrderTabs()));
@@ -52,14 +51,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->minPriceSpinBox, SIGNAL(valueChanged(int)), this, SLOT(setPriceFilter()));
     connect(ui->maxPriceSpinBox, SIGNAL(valueChanged(int)), this, SLOT(setPriceFilter()));
 
-
     //проверка на эксклюзивность выбранного варианта сортировки
     sortButtonsGroup = ui->sortButtonsGroupBox;
     for(auto sortButton : sortButtonsGroup->children())
     {
         connect(sortButton, SIGNAL(toggled(bool)), this, SLOT(checkForSortButtonsExclusivity(bool)));
     }
-
 }
 
 MainWindow::~MainWindow()
@@ -86,7 +83,9 @@ void MainWindow::setDataBase(QSqlDatabase base){
     ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
     //кнопка "добавить в корзину"
-    ui->tableView->setItemDelegateForColumn(4, new BasketButtonDelegate(ui->tableView));
+    BasketButtonDelegate *delegate = new BasketButtonDelegate(ui->tableView);
+    ui->tableView->setItemDelegateForColumn(4, delegate);
+    connect(delegate, &BasketButtonDelegate::addToBasketClicked, this, &MainWindow::addToBasket);
 
     //комбокс каталога
     if(!query->exec("SELECT name FROM product_type;")){
@@ -102,6 +101,20 @@ void MainWindow::setDataBase(QSqlDatabase base){
 void MainWindow::setAccount(QSqlRecord acc){
     account = acc;
     accountWindow->setAccount(account);
+    //получение id корзины
+    query->prepare("SELECT * FROM cart WHERE customer_id = :customer_id;");
+    query->bindValue(":customer_id", account.value(0));
+    if (!query->exec()){
+        qDebug() << query->lastError();
+        //Ошибка корзина не найдена
+    } else {
+        if (query->next())
+            cart_id = query->record().value(0).toInt();
+    }
+
+    //qDebug() << cart_id;
+    cartWindow = new CartDialog();
+    cartWindow->setCart_id(cart_id);
 }
 
 void MainWindow::setCart_id(int cart)
@@ -205,7 +218,6 @@ void MainWindow::setSortingType(QString currentSort){
         ui->tableView->sortByColumn(5, Qt::DescendingOrder);
         resetImage("(" + model->filter() + ") ORDER BY product.price DESC");
     }
-
 }
 
 void MainWindow::setMinMaxSpinBox(QSpinBox *spin, int min, int max)
@@ -241,9 +253,12 @@ void MainWindow::accountButton_clicked(){
     accountWindow->setModal(true);
     accountWindow->exec();
 }
+
 void MainWindow::cartButton_clicked(){
-    cartWindow = new CartDialog();
-    cartWindow->setCart_id(cart_id);
+    //cartWindow = new CartDialog();
+    //cartWindow->setCart_id(cart_id);
+    connect(this, &MainWindow::itemAddedToCart, cartWindow, &CartDialog::onItxxxxemAddedToCart);
+    cartWindow->updateCart();
     cartWindow->setModal(true);
     cartWindow->exec();
 }
@@ -252,6 +267,14 @@ void MainWindow::logOut_event(){
     this->close();
     LogInForm *logWindow = new LogInForm();
     logWindow->show();
+}
+
+void MainWindow::addToBasket(int itemId)
+{
+    QModelIndex index = model->index(itemId, 0);
+    QVariant data = model->data(index);
+    //qDebug() << "Значение по 0 столбцу в строке с индексом" << itemId << ":" << data;
+    emit itemAddedToCart(data);
 }
 
 void MainWindow::searchLineEdit_textChanged(const QString &arg1)

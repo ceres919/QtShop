@@ -36,14 +36,16 @@ public:
         {
             QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
             if (index.column() == BASKET_BUTTON_COLUMN_INDEX && option.rect.contains(mouseEvent->pos())) {
-                // Здесь можно обрабатывать нажатие на кнопку "в корзину"
-                qDebug() << "в корзине!!!!!" << index.row() + 1;
+                emit addToBasketClicked(index.row());
                 return true;
             }
         }
 
         return QStyledItemDelegate::editorEvent(event, model, option, index);
     }
+
+signals:
+    void addToBasketClicked(int itemId);
 };
 
 #endif // BASKETDELEGATE_H
