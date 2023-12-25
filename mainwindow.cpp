@@ -133,15 +133,6 @@ void MainWindow::setPriceFilter(){
 }
 
 void MainWindow::productTypeComboBox_onChange(int currentIndex){
-//    qDebug()<<ui->categoryComboBox->currentIndex();
-//    ui->categoryComboBox->setCurrentIndex(0);
-//    qDebug()<<ui->categoryComboBox->count();
-//    for (int i = 1; i <= ui->categoryComboBox->count(); ++i) {
-//        qDebug()<<ui->categoryComboBox->itemData();
-
-//        ui->categoryComboBox->removeItem(i);
-//    }
-
     QString currentType = ui->catalogWayComboBox->currentText();
     if(currentType != "Все категории товаров"){
         model->setFilter("product_type_name_2 = '" + currentType +"'");       
@@ -255,9 +246,8 @@ void MainWindow::accountButton_clicked(){
 }
 
 void MainWindow::cartButton_clicked(){
-    //cartWindow = new CartDialog();
-    //cartWindow->setCart_id(cart_id);
-    connect(this, &MainWindow::itemAddedToCart, cartWindow, &CartDialog::onItxxxxemAddedToCart);
+    disconnect(this, &MainWindow::itemAddedToCart, cartWindow, &CartDialog::onItemAddedToCart);
+    connect(this, &MainWindow::itemAddedToCart, cartWindow, &CartDialog::onItemAddedToCart);
     cartWindow->updateCart();
     cartWindow->setModal(true);
     cartWindow->exec();

@@ -8,6 +8,7 @@ CartDialog::CartDialog(QWidget *parent) :
     ui->setupUi(this);
 
     model = new QSqlRelationalTableModel (this);
+    query = new QSqlQuery(db);
     updateCart();
     ui->tableView->setModel(model);
     ui->tableView->verticalHeader()->hide();
@@ -35,7 +36,6 @@ void CartDialog::setCart_id(int cart)
 
 void CartDialog::onItemAddedToCart(const QVariant &data)
 {
-    QSqlQuery *query = new QSqlQuery(db);
     query->prepare("INSERT INTO cart_product (cart_id, product_id) VALUES (:cart_id, :product_id)");
     query->bindValue(":cart_id", cart_id);
     query->bindValue(":product_id", data.toInt());

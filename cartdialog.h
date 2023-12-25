@@ -30,6 +30,7 @@ public slots:
 private:
     Ui::CartDialog *ui;
     QSqlDatabase db;
+    QSqlQuery *query;
     QSqlRelationalTableModel *model;
     int cart_id;
 };
