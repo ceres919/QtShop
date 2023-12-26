@@ -31,7 +31,6 @@ private:
     Ui::RegistrationForm *ui;
     QSqlDatabase db;
     QSqlQuery *query;
-    //MainWindow *mainWindow;
 };
 
 #endif // REGISTRATIONFORM_H

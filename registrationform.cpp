@@ -20,11 +20,6 @@ void RegistrationForm::setDataBase(QSqlDatabase base){
 }
 
 void RegistrationForm::signUpButton_clicked(){
-//    AccountRequest *accReq = new AccountRequest();
-//    accReq->setForm(this);
-//    accReq->setDb(db);
-
-
     QRegExp name("^[А-ЯЁ][а-яё]+(?:\\s+[А-ЯЁ][а-яё]+){0,2}(?:\\s+[А-ЯЁ]\\.)?(?:\\s+[А-ЯЁ]\\.)?$");
     QRegExp email("^((?!\\.)[\\w\\-_.]*[^.])(@\\w+)(\\.\\w+(\\.\\w+)?[^.\\W])$");
     QRegExp password("^[A-Za-z\\d]{8,}");
@@ -74,13 +69,11 @@ void RegistrationForm::signUpButton_clicked(){
         return;
     }
 
-    //получение id корзины
     int cart_id = 0;
     query->prepare("SELECT * FROM cart WHERE customer_id = :customer_id;");
     query->bindValue(":customer_id", account_id);
     if (!query->exec()){
         qDebug() << query->lastError();
-        //Ошибка корзина не найдена
     } else {
         if (query->next())
             cart_id = query->record().value(0).toInt();

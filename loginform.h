@@ -36,9 +36,6 @@ private:
     QSettings *settings;
     QSqlDatabase db;
     QSqlQuery *query;
-    //MainWindow *mainWindow;
-    //RegistrationForm *signUpWindow;
-
 };
 
 #endif // LOGINFORM_H

@@ -31,6 +31,8 @@ private slots:
     void on_tableView_clicked(const QModelIndex &index);
     void on_deleteButton_clicked();
 
+    void on_buyButton_clicked();
+
 private:
     Ui::CartDialog *ui;
     QSqlDatabase db;

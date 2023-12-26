@@ -14,7 +14,8 @@
 #include <QRadioButton>
 #include <QSpinBox>
 #include <QList>
-
+#include <QListWidget>
+#include <QTimer>
 #include "accountdialog.h"
 #include "loginform.h"
 #include "cartdialog.h"
@@ -54,11 +55,16 @@ private slots:
     void category_onChange(int currentIndex);
     void setPriceFilter();
     void searchLineEdit_textChanged(const QString &arg1);
+    void searchButton_clicked();
     void loadImage(const QString &urlString);
     void setImage(const QUrl &imageUrl, const QImage &image);
     void resetImage(QString filter);
     void updateImages(const QUrl &imageUrl);
     void onImageRead(const QUrl &imageUrl, const QImage &image);
+    void codeChangeTimer();
+    void countdownCodeTimer();
+    void addAddressButton_clicked();
+    void deleteAddressButton_clicked();
 
 private:
     void setMinMax(int min, int max);
@@ -68,6 +74,7 @@ private:
     void setSortingType(QString currentSort);
     void minMaxPriceOfProducts();
     Ui::MainWindow *ui;
+    QSettings *settings;
     QSqlDatabase db;
     QSqlRelationalTableModel *model;
     QSqlQuery *query;
@@ -78,5 +85,9 @@ private:
     AccountDialog *accountWindow;
     CartDialog *cartWindow;
     QGroupBox *sortButtonsGroup;
+    QTimer *codeTimer;
+    QTimer *timer;
+
+    int time = 0;
 };
 #endif // MAINWINDOW_H

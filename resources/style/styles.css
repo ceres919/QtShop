@@ -6,3 +6,12 @@
     border-width: 0px;
     border-radius: 10px;
 }
+
+/*horizontalLayout_5*/
+.QLabel#codeLabel {
+    border: 3px solid grey;
+    font-size: 20px;
+    font-weight: bold;
+/*    text-align: center;*/
+/*    qproperty-defaultAlignment: AlignRight;*/
+}

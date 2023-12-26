@@ -20,8 +20,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->categoryComboBox->setVisible(false);
     ui->label->setVisible(false);
 
+    settings = new QSettings("Qt_Shop", "DeliverySettings", this);
+
     //поиск
     connect(ui->searchLineEdit, SIGNAL(textChanged(QString)), this, SLOT(searchLineEdit_textChanged(QString)));
+    connect(ui->searchLineEdit, SIGNAL(returnPressed()), this, SLOT(searchButton_clicked()));
 
     //смена типа и категории товаров
     connect(ui->catalogWayComboBox, SIGNAL(activated(int)), this, SLOT(productTypeComboBox_onChange(int)));
@@ -57,11 +60,57 @@ MainWindow::MainWindow(QWidget *parent)
     {
         connect(sortButton, SIGNAL(toggled(bool)), this, SLOT(checkForSortButtonsExclusivity(bool)));
     }
+
+    //Таб Доставка ////////////////
+
+    //таймер для кода
+    time = 30;
+    codeChangeTimer();
+    countdownCodeTimer();
+
+    codeTimer = new QTimer (this);
+    timer = new QTimer (this);
+    connect(codeTimer, SIGNAL(timeout()), this, SLOT(codeChangeTimer()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(countdownCodeTimer()));
+
+    codeTimer->start(30000);
+    timer->start(1000);
+
+    //адреса доставки
+    connect(ui->addAddressPushButton, SIGNAL(clicked()), this, SLOT(addAddressButton_clicked()));
+    connect(ui->addressLineEdit, SIGNAL(returnPressed()), this, SLOT(addAddressButton_clicked()));
+
+    connect(ui->deleteAddressPushButton, SIGNAL(clicked()), this, SLOT(deleteAddressButton_clicked()));
+
+
+    if (!settings->value("DeliverySettings/address").toStringList().isEmpty()) {
+
+        for(auto it : settings->value("DeliverySettings/address").toStringList()){
+            QListWidgetItem *item = new QListWidgetItem(ui->addressesList);
+            ui->addressesList->setItemWidget(item, new QRadioButton(it));
+        }
+    }
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+// Основное окно ///////////////////////////////
+
+void MainWindow::setCart_id(int cart)
+{
+    cart_id = cart;
+}
+
+void MainWindow::logoButton_clicked(){
+    ui->mainTabWidget->setCurrentIndex(0);
+}
+
+void MainWindow::searchButton_clicked()
+{
+    ui->mainTabWidget->setCurrentIndex(1);
 }
 
 void MainWindow::setDataBase(QSqlDatabase base){
@@ -96,58 +145,52 @@ void MainWindow::setDataBase(QSqlDatabase base){
             ui->catalogWayComboBox->addItem(query->record().value(0).toString());
         }
     }
-
-//    // Получаем модель данных из QTableView
-//    QAbstractItemModel *model = ui->tableView->model();
-
-//    int rowCount = model->rowCount(); // Получаем количество строк
-//    int columnCount = model->columnCount(); // Получаем количество столбцов
-
-//    // Перебираем данные и создаем QFrame'ы
-//    for (int row = 0; row < rowCount; ++row) {
-//        for (int column = 0; column < columnCount; ++column) {
-//            QModelIndex index = model->index(row, column); // Получаем индекс ячейки
-//            QString cellData = model->data(index, Qt::DisplayRole).toString(); // Получаем данные из ячейки
-
-//            // Создаем QFrame с данными из ячейки
-//            QFrame *frame = new QFrame;
-//            QLabel *label = new QLabel(cellData);
-//            QVBoxLayout *layout = new QVBoxLayout;
-//            layout->addWidget(label);
-//            frame->setLayout(layout);
-
-//            // Добавляем QFrame на страницу ui->catalogPage
-//            ui->catalogPage->layout()->addWidget(frame);
-//        }
-//    }
 }
 
 void MainWindow::setAccount(QSqlRecord acc){
     account = acc;
     accountWindow->setAccount(account);
-    //получение id корзины
     query->prepare("SELECT * FROM cart WHERE customer_id = :customer_id;");
     query->bindValue(":customer_id", account.value(0));
     if (!query->exec()){
         qDebug() << query->lastError();
-        //Ошибка корзина не найдена
     } else {
         if (query->next())
             cart_id = query->record().value(0).toInt();
     }
-
-    //qDebug() << cart_id;
     cartWindow = new CartDialog();
     cartWindow->setCart_id(cart_id);
 }
 
-void MainWindow::setCart_id(int cart)
-{
-    cart_id = cart;
+void MainWindow::accountButton_clicked(){
+    accountWindow->setModal(true);
+    accountWindow->exec();
 }
 
-void MainWindow::logoButton_clicked(){
-    ui->mainTabWidget->setCurrentIndex(0);
+void MainWindow::cartButton_clicked(){
+    disconnect(this, &MainWindow::itemAddedToCart, cartWindow, &CartDialog::onItemAddedToCart);
+    connect(this, &MainWindow::itemAddedToCart, cartWindow, &CartDialog::onItemAddedToCart);
+    cartWindow->updateCart();
+    cartWindow->setModal(true);
+    cartWindow->exec();
+}
+
+void MainWindow::logOut_event(){
+    this->close();
+    LogInForm *logWindow = new LogInForm();
+    logWindow->show();
+}
+
+
+// Таб Каталог ///////////////////////////////////////////
+
+void MainWindow::switchOrderTabs(){
+    if(QObject::sender()->objectName() == "netOrderPushButton"){
+        ui->itemsListBodyTabWidget->setCurrentIndex(0);
+    }
+    else{
+        ui->itemsListBodyTabWidget->setCurrentIndex(1);
+    }
 }
 
 void MainWindow::setPriceFilter(){
@@ -185,12 +228,20 @@ void MainWindow::category_onChange(int currentIndex){
     resetImage("(" + model->filter() + ")");
 }
 
-void MainWindow::switchOrderTabs(){
-    if(QObject::sender()->objectName() == "netOrderPushButton"){
-        ui->itemsListBodyTabWidget->setCurrentIndex(0);
+void MainWindow::newWay(int typeIndex){
+    ui->categoryComboBox->clear();
+    ui->label->setVisible(true);
+    ui->categoryComboBox->setVisible(true);
+    query->prepare("SELECT name FROM type_category WHERE type_id = :type_id;");
+    query->bindValue(":type_id", typeIndex);
+    if(!query->exec()){
+        qDebug() << query->lastError();
     }
     else{
-        ui->itemsListBodyTabWidget->setCurrentIndex(1);
+        ui->categoryComboBox->addItem("Все");
+        while(query->next()){
+            ui->categoryComboBox->addItem(query->record().value(0).toString());
+        }
     }
 }
 
@@ -215,7 +266,6 @@ void MainWindow::checkForSortButtonsExclusivity(bool checked){
         resetImage("(" + model->filter() + ")");
     }
 }
-
 
 void MainWindow::setSortingType(QString currentSort){
     ui->tableView->setSortingEnabled(false);
@@ -245,42 +295,6 @@ void MainWindow::setMinMaxSlider(QSlider *slider, int min, int max)
 {
     slider->setMinimum(min);
     slider->setMaximum(max);
-}
-
-void MainWindow::newWay(int typeIndex){
-    ui->categoryComboBox->clear();
-    ui->label->setVisible(true);
-    ui->categoryComboBox->setVisible(true);
-    query->prepare("SELECT name FROM type_category WHERE type_id = :type_id;");
-    query->bindValue(":type_id", typeIndex);
-    if(!query->exec()){
-        qDebug() << query->lastError();
-    }
-    else{
-        ui->categoryComboBox->addItem("Все");
-        while(query->next()){
-            ui->categoryComboBox->addItem(query->record().value(0).toString());
-        }
-    }
-}
-
-void MainWindow::accountButton_clicked(){
-    accountWindow->setModal(true);
-    accountWindow->exec();
-}
-
-void MainWindow::cartButton_clicked(){
-    disconnect(this, &MainWindow::itemAddedToCart, cartWindow, &CartDialog::onItemAddedToCart);
-    connect(this, &MainWindow::itemAddedToCart, cartWindow, &CartDialog::onItemAddedToCart);
-    cartWindow->updateCart();
-    cartWindow->setModal(true);
-    cartWindow->exec();
-}
-
-void MainWindow::logOut_event(){
-    this->close();
-    LogInForm *logWindow = new LogInForm();
-    logWindow->show();
 }
 
 void MainWindow::addToBasket(int itemId)
@@ -343,3 +357,51 @@ void MainWindow::onImageRead(const QUrl &imageUrl, const QImage &image) {
     setImage(imageUrl, image);
 }
 
+
+
+
+// Таб Доставка ///////////////////////////////
+
+void MainWindow::codeChangeTimer()
+{
+    QString codeNumder = "";
+    for(int i = 0; i < 4; ++i){
+        codeNumder += QString::number(rand() % ((9 + 1) - 0) + 0);
+    }
+    ui->codeLabel->setText(codeNumder);
+    time = 30;
+}
+
+void MainWindow::countdownCodeTimer()
+{
+    QString text = "Код обновится через " + QString::number(time) + " секунд";
+    ui->codeInfo->setText(text);
+    time--;
+}
+
+void MainWindow::addAddressButton_clicked()
+{
+    if (!ui->addressLineEdit->text().isEmpty()) {
+        QStringList addressList = settings->value("DeliverySettings/address").toStringList();
+        addressList.append(ui->addressLineEdit->text());
+        settings->setValue("DeliverySettings/address", addressList);
+        QListWidgetItem *item = new QListWidgetItem(ui->addressesList);
+        ui->addressesList->setItemWidget(item, new QRadioButton(ui->addressLineEdit->text()));
+        ui->addressLineEdit->clear();
+    }
+}
+
+void MainWindow::deleteAddressButton_clicked()
+{
+    ui->addressesList->takeItem(ui->addressesList->row(ui->addressesList->currentItem()));
+    QStringList addressList;
+    for(int i = 0; i < ui->addressesList->count(); ++i){
+        auto item = ui->addressesList->item(i);
+        QRadioButton *qbutton = qobject_cast<QRadioButton*>(ui->addressesList->itemWidget(item));
+        addressList.append(qbutton->text());
+    }
+    settings->setValue("DeliverySettings/address", addressList);
+}
+
+
+// Таб Главная ////////////////////////////////

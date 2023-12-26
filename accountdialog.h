@@ -36,7 +36,6 @@ private:
     QSqlDatabase db;
     QSqlRecord account;
     QSqlQuery *query;
-
 };
 
 #endif // ACCOUNTDIALOG_H

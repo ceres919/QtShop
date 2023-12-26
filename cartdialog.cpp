@@ -51,6 +51,7 @@ void CartDialog::updateCart()
                     "FROM cart_product LEFT JOIN cart ON cart_id = cart.id "
                     "LEFT JOIN customer ON customer_id = customer.id "
                     "LEFT JOIN product ON product_id = product.id "
+                    "WHERE cart_product.cart_id=" + QString::number(cart_id) + " "
                     "GROUP BY cart_product.cart_id, cart_product.product_id", db);
 }
 
@@ -74,6 +75,27 @@ void CartDialog::on_deleteButton_clicked()
                    "WHERE product_id = :product_id "
                    "AND ROWID IN "
                    "(SELECT ROWID FROM cart_product WHERE product_id = :product_id LIMIT 1);");
+    query->bindValue(":product_id", product_id);
+    if(!query->exec()){
+        qDebug() << query->lastError();
+    }
+    updateCart();
+}
+
+
+void CartDialog::on_buyButton_clicked()
+{
+    query->prepare("DELETE FROM cart_product "
+                   "WHERE product_id = :product_id "
+                   "AND ROWID IN "
+                   "(SELECT ROWID FROM cart_product WHERE product_id = :product_id LIMIT 1);");
+    query->bindValue(":product_id", product_id);
+    if(!query->exec()){
+        qDebug() << query->lastError();
+    }
+
+    query->prepare("INSERT INTO ordered_product (cart_id, product_id) VALUES (:cart_id, :product_id);");
+    query->bindValue(":cart_id", cart_id);
     query->bindValue(":product_id", product_id);
     if(!query->exec()){
         qDebug() << query->lastError();
