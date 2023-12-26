@@ -27,12 +27,18 @@ public slots:
     void onItemAddedToCart(const QVariant& data);
     void updateCart();
 
+private slots:
+    void on_tableView_clicked(const QModelIndex &index);
+    void on_deleteButton_clicked();
+
 private:
     Ui::CartDialog *ui;
     QSqlDatabase db;
     QSqlQuery *query;
     QSqlRelationalTableModel *model;
     int cart_id;
+    int product_id;
+    int curr_row;
 };
 
 #endif // CARTDIALOG_H

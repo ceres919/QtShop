@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     resetImage(QString::number(1));
 
     ui->setupUi(this);
-    ui->netOrderPushButton->animateClick();
+    ui->listOrderPushButton->animateClick();
     ui->itemsListBodyTabWidget->tabBar()->hide();
     ui->tableView->horizontalHeader()->hide();
     ui->tableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
@@ -96,6 +96,30 @@ void MainWindow::setDataBase(QSqlDatabase base){
             ui->catalogWayComboBox->addItem(query->record().value(0).toString());
         }
     }
+
+//    // Получаем модель данных из QTableView
+//    QAbstractItemModel *model = ui->tableView->model();
+
+//    int rowCount = model->rowCount(); // Получаем количество строк
+//    int columnCount = model->columnCount(); // Получаем количество столбцов
+
+//    // Перебираем данные и создаем QFrame'ы
+//    for (int row = 0; row < rowCount; ++row) {
+//        for (int column = 0; column < columnCount; ++column) {
+//            QModelIndex index = model->index(row, column); // Получаем индекс ячейки
+//            QString cellData = model->data(index, Qt::DisplayRole).toString(); // Получаем данные из ячейки
+
+//            // Создаем QFrame с данными из ячейки
+//            QFrame *frame = new QFrame;
+//            QLabel *label = new QLabel(cellData);
+//            QVBoxLayout *layout = new QVBoxLayout;
+//            layout->addWidget(label);
+//            frame->setLayout(layout);
+
+//            // Добавляем QFrame на страницу ui->catalogPage
+//            ui->catalogPage->layout()->addWidget(frame);
+//        }
+//    }
 }
 
 void MainWindow::setAccount(QSqlRecord acc){

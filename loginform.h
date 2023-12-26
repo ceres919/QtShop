@@ -8,6 +8,8 @@
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QSqlRelationalTableModel>
+#include <QSettings>
+
 #include "registrationform.h"
 #include "mainwindow.h"
 
@@ -27,9 +29,11 @@ public:
 private slots:
     void regButton_clicked();
     void logButton_clicked();
+    void rememberMe(int arg1);
 
 private:
     Ui::LogInForm *ui;
+    QSettings *settings;
     QSqlDatabase db;
     QSqlQuery *query;
     //MainWindow *mainWindow;

@@ -8,9 +8,14 @@ LogInForm::LogInForm(QWidget *parent) :
     ui->setupUi(this);
     query = new QSqlQuery(db);
 
+    settings = new QSettings("Qt_Shop", "LogInSettings", this);
+
+    ui->rememberCheckBox->animateClick();
+
     connect(ui->logInPushButton, SIGNAL(clicked()), this, SLOT(logButton_clicked()));
     connect(ui->registrationPushButton, SIGNAL(clicked()), this, SLOT(regButton_clicked()));
     connect(ui->passwordLineEdit, SIGNAL(returnPressed()), this, SLOT(logButton_clicked()));
+    connect(ui->rememberCheckBox, SIGNAL(stateChanged(int)), this, SLOT(rememberMe(int)));
 }
 
 LogInForm::~LogInForm()
@@ -53,6 +58,14 @@ void LogInForm::logButton_clicked(){
             cart_id = query->record().value(0).toInt();
     }
 
+    if (ui->rememberCheckBox->isChecked()) {
+        settings->setValue("LogInSettings/email", email);
+        settings->setValue("LogInSettings/password", password);
+    }
+    else {
+        settings->clear();
+    }
+
     hide();
     MainWindow *mainWindow = new MainWindow();
     mainWindow->setDataBase(db);
@@ -66,4 +79,15 @@ void LogInForm::regButton_clicked(){
     RegistrationForm *signUpWindow = new RegistrationForm();
     signUpWindow->setDataBase(db);
     signUpWindow->show();
+}
+
+void LogInForm::rememberMe(int arg1) {
+    if (ui->rememberCheckBox->isChecked()) {
+        ui->emailLineEdit->insert(settings->value("LogInSettings/email").toString());
+        ui->passwordLineEdit->insert(settings->value("LogInSettings/password").toString());
+    }
+    else {
+        ui->emailLineEdit->clear();
+        ui->passwordLineEdit->clear();
+    }
 }
