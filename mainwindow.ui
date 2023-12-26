@@ -6,9 +6,27 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1098</width>
-    <height>1089</height>
+    <width>1200</width>
+    <height>1313</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1200</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1200</width>
+    <height>16777215</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -21,27 +39,30 @@
        <widget class="QPushButton" name="logoPushButton">
         <property name="minimumSize">
          <size>
-          <width>150</width>
+          <width>130</width>
           <height>70</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>150</width>
+          <width>130</width>
           <height>70</height>
          </size>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
         </property>
         <property name="text">
          <string/>
         </property>
         <property name="icon">
          <iconset resource="resources.qrc">
-          <normaloff>:/resources/image/logo_image.png</normaloff>:/resources/image/logo_image.png</iconset>
+          <normaloff>:/resources/image/logo2.png</normaloff>:/resources/image/logo2.png</iconset>
         </property>
         <property name="iconSize">
          <size>
-          <width>150</width>
-          <height>60</height>
+          <width>130</width>
+          <height>130</height>
          </size>
         </property>
         <property name="flat">
@@ -64,22 +85,66 @@
       </item>
       <item>
        <widget class="QLineEdit" name="searchLineEdit">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>16</pointsize>
+          <italic>true</italic>
+         </font>
+        </property>
         <property name="placeholderText">
          <string>Поиск...</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="accountPushButton">
+       <widget class="QPushButton" name="cartPushButton">
         <property name="text">
-         <string>Аккаунт</string>
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="resources.qrc">
+          <normaloff>:/resources/image/shopping-cart.png</normaloff>:/resources/image/shopping-cart.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>32</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="cartPushButton">
+       <widget class="QPushButton" name="accountPushButton">
         <property name="text">
-         <string>Корзина</string>
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="resources.qrc">
+          <normaloff>:/resources/image/user.png</normaloff>:/resources/image/user.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -94,12 +159,168 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>3</number>
+      </property>
+      <property name="elideMode">
+       <enum>Qt::ElideMiddle</enum>
       </property>
       <widget class="QWidget" name="mainTab">
        <attribute name="title">
         <string>Главная</string>
        </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_6">
+        <item>
+         <widget class="QScrollArea" name="scrollArea_2">
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>1128</width>
+             <height>1101</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_7">
+            <item>
+             <widget class="QLabel" name="label_2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>1100</width>
+                <height>500</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="pixmap">
+               <pixmap resource="resources.qrc">:/resources/image/logo_image.png</pixmap>
+              </property>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_8">
+              <property name="text">
+               <string>&lt;html&gt;
+&lt;styles&gt;
+&lt;style&gt;
+.intro_store_title{
+    align-items: center;
+    font-weight: 500;
+    font-size: 40px;
+    line-height: 60px;
+    margin-bottom: 22px;
+}
+&lt;/style&gt;
+&lt;style&gt;
+.intro_store_subtitle {
+    align-items: center;
+    font-size: 25px;
+    line-height: 24px;
+    margin-bottom: 59px;
+}
+&lt;/style&gt;
+&lt;style&gt;
+.intro_store_subtitle1 {
+    align-items: center;
+    font-size: 17px;
+    line-height: 24px;
+}
+&lt;/style&gt;
+&lt;/styles&gt;
+&lt;body&gt;
+&lt;h1 class=&quot;intro_store_title&quot;&gt;
+                        Добро пожаловать в магазин NSK.Оргтехника
+                    &lt;/h1&gt;
+                    &lt;p class=&quot;intro_store_subtitle&quot;&gt;
+                        У нас вы найдете все необходимое для эффективной работы вашего офиса
+                    &lt;/p&gt;
+                    &lt;p class=&quot;intro_store_subtitle1&quot;&gt;
+                        Магазин оргтехники предлагает широкий ассортимент продукции, предназначенной для обеспечения эффективной работы вашего офиса, домашнего кабинета или бизнес-процессов. Наша цель - предоставить вам высококачественные устройства и принадлежности, которые помогут вам улучшить производительность, уменьшить затраты времени и повысить эффективность выполнения задач. &lt;br&gt;&lt;br&gt;
+	Наши товары включают в себя офисные принтеры, сканеры, ксероксы, расходные материалы и другие устройства, спроектированные для обеспечения надежного и качественного офисного функционирования.&lt;br&gt;&lt;br&gt;
+	Посетите наш магазин оргтехники прямо сейчас, чтобы обновить ваш офис современными и надежными устройствами для работы. У нас вы найдете высококачественные товары по конкурентоспособным ценам, дружелюбное обслуживание и готовность помочь вам сделать ваш офис более производительным и эффективным!
+	&lt;br&gt;&lt;br&gt;С уважением, Ваш магазин NSK.Оргтехника
+                    &lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</string>
+              </property>
+              <property name="scaledContents">
+               <bool>false</bool>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_7">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_6">
+              <item>
+               <widget class="QPushButton" name="pushButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>200</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="baseSize">
+                 <size>
+                  <width>200</width>
+                  <height>90</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <bold>false</bold>
+                 </font>
+                </property>
+                <property name="autoFillBackground">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>Перейти в каталог &gt;&gt;</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="catalogTab">
        <attribute name="title">
@@ -312,8 +533,36 @@
              </item>
              <item row="0" column="6">
               <widget class="QPushButton" name="listOrderPushButton">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
+               </property>
                <property name="text">
-                <string>Список</string>
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="resources.qrc">
+                 <normaloff>:/resources/image/list.png</normaloff>:/resources/image/list.png</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
                </property>
                <property name="checkable">
                 <bool>true</bool>
@@ -322,7 +571,7 @@
                 <bool>true</bool>
                </property>
                <property name="flat">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -366,8 +615,30 @@
              </item>
              <item row="0" column="4">
               <widget class="QPushButton" name="netOrderPushButton">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16</width>
+                 <height>16</height>
+                </size>
+               </property>
                <property name="text">
-                <string>Сетка</string>
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="resources.qrc">
+                 <normaloff>:/resources/image/net.png</normaloff>:/resources/image/net.png</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>16</width>
+                 <height>16</height>
+                </size>
                </property>
                <property name="checkable">
                 <bool>true</bool>
@@ -382,7 +653,7 @@
                 <bool>false</bool>
                </property>
                <property name="flat">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -450,7 +721,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
+                 <width>58</width>
                  <height>48</height>
                 </rect>
                </property>
@@ -538,8 +809,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1056</width>
-             <height>873</height>
+             <width>1158</width>
+             <height>1107</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_9">
@@ -666,6 +937,9 @@
               </property>
               <property name="pixmap">
                <pixmap resource="resources.qrc">:/resources/image/accountdialog.svg</pixmap>
+              </property>
+              <property name="scaledContents">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -801,6 +1075,120 @@
        <attribute name="title">
         <string>Обратная связь</string>
        </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_8">
+        <item>
+         <widget class="QLabel" name="label_9">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>500</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>500</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="pixmap">
+           <pixmap resource="resources.qrc">:/resources/image/tropical-green-leaves-background.jpg</pixmap>
+          </property>
+          <property name="scaledContents">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_8">
+          <item>
+           <spacer name="horizontalSpacer_8">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_2">
+            <property name="text">
+             <string>О нас</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_9">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_9">
+          <item>
+           <spacer name="horizontalSpacer_10">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_3">
+            <property name="text">
+             <string>Справка</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_11">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
@@ -811,7 +1199,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1098</width>
+     <width>1200</width>
      <height>42</height>
     </rect>
    </property>

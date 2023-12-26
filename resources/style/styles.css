@@ -15,3 +15,7 @@
 /*    text-align: center;*/
 /*    qproperty-defaultAlignment: AlignRight;*/
 }
+.QLabel#resultLabel, #resultPrice{
+    font-size: 20px;
+    font-weight: bold;
+}

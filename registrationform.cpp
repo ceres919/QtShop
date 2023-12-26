@@ -15,6 +15,14 @@ RegistrationForm::~RegistrationForm()
     delete ui;
 }
 
+void RegistrationForm::closeEvent(QCloseEvent *event)
+{
+    LogInForm *logWindow = new LogInForm();
+    logWindow->show();
+    //Здесь код
+    event->accept();
+}
+
 void RegistrationForm::setDataBase(QSqlDatabase base){
     db = base;
 }

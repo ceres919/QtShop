@@ -26,6 +26,7 @@ public:
 
 private slots:
     void signUpButton_clicked();
+    void closeEvent(QCloseEvent *event);
 
 private:
     Ui::RegistrationForm *ui;
