@@ -8,7 +8,8 @@
 #include <QSqlRecord>
 #include <QSqlRelationalTableModel>
 #include <QSqlRelationalDelegate>
-
+#include <QMessageBox>
+#include <QFileDialog>
 namespace Ui {
 class CartDialog;
 }
@@ -22,6 +23,7 @@ public:
     ~CartDialog();
     void setDataBase(QSqlDatabase &base);
     void setCart_id(int cart);
+    void setDeliveryAddress(QString address);
 
 public slots:
     void onItemAddedToCart(const QVariant& data);
@@ -30,7 +32,6 @@ public slots:
 private slots:
     void on_tableView_clicked(const QModelIndex &index);
     void on_deleteButton_clicked();
-
     void on_buyButton_clicked();
 
 private:
@@ -38,9 +39,11 @@ private:
     QSqlDatabase db;
     QSqlQuery *query;
     QSqlRelationalTableModel *model;
+    QString deliveryAddress;
     int cart_id;
     int product_id;
     int curr_row;
+    int result;
 };
 
 #endif // CARTDIALOG_H

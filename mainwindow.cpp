@@ -36,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
     //чтобы выйти из аккаунта
     accountWindow = new AccountDialog();
     connect(accountWindow, &AccountDialog::logOutSignal, this, &MainWindow::logOut_event);
+    cartWindow = new CartDialog();
 
     //вызов окон аккаунта и корзины
     connect(ui->accountPushButton, SIGNAL(clicked()), this, SLOT(accountButton_clicked()));
@@ -158,7 +159,7 @@ void MainWindow::setAccount(QSqlRecord acc){
         if (query->next())
             cart_id = query->record().value(0).toInt();
     }
-    cartWindow = new CartDialog();
+//    cartWindow = new CartDialog();
     cartWindow->setCart_id(cart_id);
 }
 
@@ -170,6 +171,16 @@ void MainWindow::accountButton_clicked(){
 void MainWindow::cartButton_clicked(){
     disconnect(this, &MainWindow::itemAddedToCart, cartWindow, &CartDialog::onItemAddedToCart);
     connect(this, &MainWindow::itemAddedToCart, cartWindow, &CartDialog::onItemAddedToCart);
+    //cartWindow->setDeliveryAddress(ui->addressGroupBox->);
+
+    for(int i = 0; i < ui->addressesList->count(); ++i){
+        auto item = ui->addressesList->item(i);
+        QRadioButton *qbutton = qobject_cast<QRadioButton*>(ui->addressesList->itemWidget(item));
+        if(qbutton->isChecked()){
+            cartWindow->setDeliveryAddress(qbutton->text());
+        }
+    }
+
     cartWindow->updateCart();
     cartWindow->setModal(true);
     cartWindow->exec();
@@ -401,6 +412,11 @@ void MainWindow::deleteAddressButton_clicked()
         addressList.append(qbutton->text());
     }
     settings->setValue("DeliverySettings/address", addressList);
+}
+
+void MainWindow::deliveryAddressChange(bool state)
+{
+    qDebug() << "нажато";
 }
 
 

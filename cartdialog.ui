@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>716</width>
-    <height>468</height>
+    <height>391</height>
    </rect>
   </property>
   <property name="font">
@@ -77,6 +77,30 @@
    </item>
    <item row="1" column="0">
     <widget class="QTableView" name="tableView"/>
+   </item>
+   <item row="3" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Итого: </string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="resultPrice">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

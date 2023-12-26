@@ -65,7 +65,7 @@ private slots:
     void countdownCodeTimer();
     void addAddressButton_clicked();
     void deleteAddressButton_clicked();
-
+    void deliveryAddressChange(bool state);
 private:
     void setMinMax(int min, int max);
     void setMinMaxSlider(QSlider *slider, int min, int max);
