@@ -21,7 +21,7 @@ CartDialog::CartDialog(QWidget *parent) :
     ui->tableView->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
     ui->tableView->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
     ui->tableView->horizontalHeader()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
-
+    ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
 
 CartDialog::~CartDialog()
@@ -134,7 +134,7 @@ void CartDialog::on_buyButton_clicked()
                 msgBox2.setText("Сохранить распечатанный чек?");
                 msgBox2.setInformativeText(checkList);
                 msgBox2.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-                msgBox2.setDefaultButton(QMessageBox::Save);
+                msgBox2.setDefaultButton(QMessageBox::Cancel);
                 int ret2 = msgBox2.exec();
                 switch (ret2) {
                 case QMessageBox::Save:{

@@ -13,13 +13,37 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     ui->listOrderPushButton->animateClick();
     ui->itemsListBodyTabWidget->tabBar()->hide();
+   // ui->tableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     ui->tableView->horizontalHeader()->hide();
-    ui->tableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     ui->tableView->verticalHeader()->hide();
     ui->tableView->resizeColumnsToContents();
+    ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->categoryComboBox->setVisible(false);
     ui->label->setVisible(false);
+    ui->searchLineEdit->setClearButtonEnabled(true);
+    ui->searchLineEdit->addAction(QIcon(":/resources/image/magnifier.png"),
+                               QLineEdit::ActionPosition::LeadingPosition);
+    ui->addressLineEdit->setClearButtonEnabled(true);
+    ui->addressLineEdit->addAction(QIcon(":/resources/image/map_pin.png"),
+                                  QLineEdit::ActionPosition::LeadingPosition);
 
+    QMenu* pmnuHelp = new QMenu("&Справка");
+    pmnuHelp->addAction("&Помощь",
+                        this,
+                        SLOT(slotInfo()),
+                        QKeySequence(Qt::Key_F9)
+                        );
+    pmnuHelp->addAction("&О нас",
+                        this,
+                        SLOT(slotAbout()),
+                        QKeySequence(Qt::Key_F10)
+                        );
+    menuBar()->addMenu(pmnuHelp);
+
+    ui->mainTabWidget->setCurrentIndex(0);
+    connect(ui->pushButton_2, SIGNAL(clicked()), this, SLOT(slotAbout()));
+    connect(ui->pushButton_3, SIGNAL(clicked()), this, SLOT(slotInfo()));
+    connect(ui->toCatalogPushButton, SIGNAL(clicked()), this, SLOT(searchButton_clicked()));
     settings = new QSettings("Qt_Shop", "DeliverySettings", this);
 
     //поиск
@@ -91,6 +115,10 @@ MainWindow::MainWindow(QWidget *parent)
             ui->addressesList->setItemWidget(item, new QRadioButton(it));
         }
     }
+
+    socket = new QTcpSocket(this);
+    connect(socket, &QTcpSocket::readyRead, this, &MainWindow::readMessage);
+    connect(socket, &QTcpSocket::disconnected, socket, &QTcpSocket::deleteLater);
 }
 
 MainWindow::~MainWindow()
@@ -419,5 +447,62 @@ void MainWindow::deliveryAddressChange(bool state)
     qDebug() << "нажато";
 }
 
+void MainWindow::slotInfo() {
+    HelpInformation *form = new HelpInformation();
+    form->setWindowModality(Qt::ApplicationModal);
+    form->show();
+}
+
+void MainWindow::slotAbout() {
+    QMessageBox::about(this, "О программе",
+                     "Версия: 0.0.1 Alpha\n\nРазработчик: Костева Яна, "
+                                               "ИП-112\n\n            "
+                                               "© 2023 уч.год, СибГУТИ");
+}
+
 
 // Таб Главная ////////////////////////////////
+
+void MainWindow::on_connectBtn_clicked()
+{
+    socket->connectToHost(ui->address->text(), ui->port->text().toInt());
+    if (socket->waitForConnected()) {
+        ui->statusbar->showMessage("Оператор помощи на связи!");
+    }
+    else {
+        QMessageBox::critical(this,
+                              "QTCPClient",
+                              QString("The following error occurred: %1.")
+                                  .arg(socket->errorString()));
+        ui->settings->show();
+    }
+}
+
+void MainWindow::readMessage()
+{
+    QByteArray buffer = socket->readAll();
+    ui->dialogHistory->append(buffer.trimmed());
+}
+
+void MainWindow::sendToServer(QString message)
+{
+    socket->write(message.append("\n").toStdString().c_str());
+    ui->inputMessage->clear();
+}
+
+void MainWindow::on_sendBtn_clicked()
+{
+    sendToServer(ui->inputMessage->text());
+}
+
+void MainWindow::on_inputMessage_returnPressed()
+{
+    sendToServer(ui->inputMessage->text());
+}
+
+
+void MainWindow::on_callHelpBtn_clicked()
+{
+    on_connectBtn_clicked();
+}
+

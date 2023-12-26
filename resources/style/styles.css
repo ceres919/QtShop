@@ -9,13 +9,129 @@
 
 /*horizontalLayout_5*/
 .QLabel#codeLabel {
-    border: 3px solid grey;
+    border: 3px solid white;
     font-size: 20px;
     font-weight: bold;
 /*    text-align: center;*/
 /*    qproperty-defaultAlignment: AlignRight;*/
 }
-.QLabel#resultLabel, #resultPrice{
+.QLabel#resultLabel, #resultPrice {
     font-size: 20px;
     font-weight: bold;
 }
+
+.QLabel#label_9{
+    border: 1px solid white;
+    border-radius: 10px;
+}
+
+.QPushButton#toCatalogPushButton{
+    border: 0px;
+    border-radius: 10px;
+    font-size: 18px;
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(146, 201, 201, 255), stop:1 rgba(255, 255, 255, 255))
+/*    background: qlineargradient(spread:pad, x1:0.218905, y1:0.107955, x2:1, y2:0, stop:0 rgba(67, 65, 151, 255), stop:1 rgba(255, 255, 255, 255))*/
+/*    background: linear-gradient(to right, rgb(183, 253, 161), rgb(255, 214, 221));*/
+}
+
+.QLineEdit#searchLineEdit, #addressLineEdit, #inputMessage{
+    border-radius: 5px;
+    padding: 3px;
+}
+
+
+.QTabWidget#mainTabWidget{
+    background : transparent;
+}
+
+.QScrollArea{
+    background : transparent;
+}
+
+.QWidget#mainTab{
+    background : transparent;
+
+}
+
+.QListWidget#addressesList{
+    border: 1px solid grey;
+    border-radius: 5px;
+}
+
+QTableView#tableView {
+    font-size: 14px;
+}
+
+QTreeView,
+QListView,
+QTableView,
+QColumnView {
+    color: #000000;
+    gridline-color: #A17DF6;
+}
+
+QTreeView:disabled,
+QListView:disabled,
+QTableView:disabled,
+QColumnView:disabled {
+    background-color: #19232D;
+    color: #000000;
+}
+
+QTreeView:selected,
+QListView:selected,
+QTableView:selected,
+QColumnView:selected {
+    background-color: #F0B68E;
+    color: #000000;
+}
+
+QTreeView:hover,
+QListView:hover,
+QTableView:hover,
+QColumnView:hover {
+    border: 1px solid #A17DF6;
+    color: #000000;
+}
+
+QTreeView::item:pressed,
+QListView::item:pressed,
+QTableView::item:pressed,
+QColumnView::item:pressed {
+    background-color: #F0B68E;
+    color: #000000;
+}
+
+QTreeView::item:selected:hover,
+QListView::item:selected:hover,
+QTableView::item:selected:hover,
+QColumnView::item:selected:hover {
+    background: #F0B68E;
+    color: #000000;
+}
+
+QTreeView::item:selected:active,
+QListView::item:selected:active,
+QTableView::item:selected:active,
+QColumnView::item:selected:active {
+    background-color: transparent;
+    color: #000000;
+}
+
+QTreeView::item:!selected:hover,
+QListView::item:!selected:hover,
+QTableView::item:!selected:hover,
+QColumnView::item:!selected:hover {
+    outline: 3px dashed #A17DF6;
+    background-color: transparent;
+    color: #000000;
+}
+
+QTableCornerButton::section {
+    border: 1px transparent #EEC95D;
+    border-radius: 0px;
+    color: #000000;
+}
+
+
+

@@ -19,8 +19,8 @@ public:
     {
         if (index.column() == BASKET_BUTTON_COLUMN_INDEX) {
             QRect rect = option.rect;
-            painter->setBrush(Qt::darkGreen);
-            painter->drawRoundedRect(rect.adjusted(0, 0, -1, -1), 3, 3);
+            painter->setBrush(QColor::fromRgb(161, 125, 246));
+            painter->drawRoundedRect(rect.adjusted(0, 35, 0, -35), 3, 3);
             painter->setPen(Qt::white);
             painter->drawText(rect, Qt::AlignCenter, "в корзину");
         }

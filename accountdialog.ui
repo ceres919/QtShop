@@ -29,7 +29,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Аккаунт</string>
   </property>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
@@ -37,7 +37,7 @@
      <x>80</x>
      <y>30</y>
      <width>241</width>
-     <height>441</height>
+     <height>443</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">

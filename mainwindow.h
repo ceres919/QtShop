@@ -16,12 +16,15 @@
 #include <QList>
 #include <QListWidget>
 #include <QTimer>
+#include <QTcpSocket>
+
 #include "accountdialog.h"
 #include "loginform.h"
 #include "cartdialog.h"
 #include "basketdelegate.h"
 #include "imagemanager.h"
 #include "networking.h"
+#include "helpinformation.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -44,6 +47,8 @@ signals:
 public slots:
     void logOut_event();
     void addToBasket(int itemId);
+    void slotInfo();
+    void slotAbout();
 
 private slots:
     void accountButton_clicked();
@@ -66,6 +71,13 @@ private slots:
     void addAddressButton_clicked();
     void deleteAddressButton_clicked();
     void deliveryAddressChange(bool state);
+    void readMessage();
+    void on_connectBtn_clicked();
+    void on_inputMessage_returnPressed();
+    void on_sendBtn_clicked();
+
+    void on_callHelpBtn_clicked();
+
 private:
     void setMinMax(int min, int max);
     void setMinMaxSlider(QSlider *slider, int min, int max);
@@ -73,6 +85,7 @@ private:
     void newWay(int typeIndex);
     void setSortingType(QString currentSort);
     void minMaxPriceOfProducts();
+    void sendToServer(QString message);
     Ui::MainWindow *ui;
     QSettings *settings;
     QSqlDatabase db;
@@ -87,7 +100,8 @@ private:
     QGroupBox *sortButtonsGroup;
     QTimer *codeTimer;
     QTimer *timer;
-
+    QTcpSocket *socket;
+    QByteArray data;
     int time = 0;
 };
 #endif // MAINWINDOW_H

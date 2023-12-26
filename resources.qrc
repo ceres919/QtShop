@@ -10,5 +10,13 @@
         <file>resources/image/tropical-green-leaves-background.jpg</file>
         <file>resources/image/logo1.png</file>
         <file>resources/image/logo2.png</file>
+        <file>resources/help/account.html</file>
+        <file>resources/help/cart.html</file>
+        <file>resources/help/catalog.html</file>
+        <file>resources/help/hotkeys.html</file>
+        <file>resources/help/index.html</file>
+        <file>resources/image/magnifier.png</file>
+        <file>resources/image/map_pin.png</file>
+        <file>resources/image/office.jpg</file>
     </qresource>
 </RCC>

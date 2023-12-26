@@ -24,7 +24,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         loginform.h loginform.cpp loginform.ui
-        resources.qrc
+
         registrationform.h registrationform.cpp registrationform.ui
 
 
@@ -34,6 +34,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         networking_p.h
         networking.h networking.cpp
         imagemanager.h imagemanager.cpp
+        helpinformation.h helpinformation.cpp helpinformation.ui
+        resources.qrc
 
 
 
